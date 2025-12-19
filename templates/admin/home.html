@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block title %}管理员系统{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2 class="card-title">管理员系统</h2>
+    
+    <div class="menu-grid">
+        <div class="menu-item">
+            <h3>科室管理</h3>
+            <p>管理科室信息</p>
+            <a href="{{ url_for('admin_departments') }}" class="btn btn-danger">管理</a>
+        </div>
+        
+        <div class="menu-item">
+            <h3>挂号受理</h3>
+            <p>处理挂号分配</p>
+            <a href="{{ url_for('admin_registrations') }}" class="btn btn-danger">管理</a>
+        </div>
+        
+        <div class="menu-item">
+            <h3>医生管理</h3>
+            <p>管理医生信息</p>
+            <a href="{{ url_for('admin_doctors') }}" class="btn btn-danger">管理</a>
+        </div>
+        
+        <div class="menu-item">
+            <h3>药品管理</h3>
+            <p>管理药品信息</p>
+            <a href="{{ url_for('admin_drugs') }}" class="btn btn-danger">管理</a>
+        </div>
+        
+        <div class="menu-item">
+            <h3>显示表内容</h3>
+            <p>查看所有表数据</p>
+            <a href="{{ url_for('admin_tables') }}" class="btn btn-danger">查看</a>
+        </div>
+        
+        <div class="menu-item">
+            <h3>系统重置</h3>
+            <p>重置系统数据</p>
+            <form method="POST" action="{{ url_for('admin_reset') }}" onsubmit="return confirm('确认重置系统吗？此操作不可恢复！');">
+                <button type="submit" class="btn btn-danger">重置</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

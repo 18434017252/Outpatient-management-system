@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}处方查询{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2 class="card-title">处方查询</h2>
+    
+    <form method="POST">
+        <div class="form-group">
+            <label for="registration_id">挂号编号</label>
+            <input type="number" name="registration_id" id="registration_id" class="form-control" required>
+        </div>
+        
+        <button type="submit" class="btn btn-primary">查询</button>
+        <a href="{{ url_for('patient_dashboard') }}" class="btn btn-secondary">返回</a>
+    </form>
+    
+    {% if prescriptions %}
+    <h3 style="margin-top: 2rem;">处方记录</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>处方号</th>
+                <th>挂号编号</th>
+                <th>药品编号</th>
+                <th>药品数量</th>
+                <th>缴费号</th>
+                <th>创建时间</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for pres in prescriptions %}
+            <tr>
+                <td>{{ pres.prescription_id }}</td>
+                <td>{{ pres.registration_id }}</td>
+                <td>{{ pres.drug_id }}</td>
+                <td>{{ pres.quantity }}</td>
+                <td>{{ pres.payment_id }}</td>
+                <td>{{ pres.created_at }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
+</div>
+{% endblock %}

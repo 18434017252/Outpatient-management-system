@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}病人注册{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2 class="card-title">病人注册</h2>
+    
+    <form method="POST">
+        <div class="form-group">
+            <label for="name">姓名</label>
+            <input type="text" name="name" id="name" class="form-control" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="gender">性别</label>
+            <select name="gender" id="gender" class="form-control" required>
+                <option value="男">男</option>
+                <option value="女">女</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label for="phone_number">手机号</label>
+            <input type="text" name="phone_number" id="phone_number" class="form-control" required>
+        </div>
+        
+        <button type="submit" class="btn btn-success">注册</button>
+        <a href="{{ url_for('patient_home') }}" class="btn btn-secondary">返回</a>
+    </form>
+</div>
+{% endblock %}

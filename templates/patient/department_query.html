@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block title %}科室查询{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2 class="card-title">科室查询</h2>
+    
+    {% if departments %}
+    <table>
+        <thead>
+            <tr>
+                <th>科室编号</th>
+                <th>科室名称</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for dept in departments %}
+            <tr>
+                <td>{{ dept.department_id }}</td>
+                <td>{{ dept.department_name }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>暂无科室信息</p>
+    {% endif %}
+    
+    <div style="margin-top: 2rem;">
+        <a href="{{ url_for('patient_dashboard') }}" class="btn btn-secondary">返回</a>
+    </div>
+</div>
+{% endblock %}

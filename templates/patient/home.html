@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %}病人系统{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2 class="card-title">病人系统</h2>
+    
+    <div class="menu-grid">
+        <div class="menu-item">
+            <h3>查询信息</h3>
+            <a href="{{ url_for('patient_query') }}" class="btn btn-primary">查询</a>
+        </div>
+        
+        <div class="menu-item">
+            <h3>病人注册</h3>
+            <a href="{{ url_for('patient_register') }}" class="btn btn-primary">注册</a>
+        </div>
+        
+        <div class="menu-item">
+            <h3>病人登录</h3>
+            <a href="{{ url_for('patient_login') }}" class="btn btn-primary">登录</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

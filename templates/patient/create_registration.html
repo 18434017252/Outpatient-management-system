@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}挂号{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2 class="card-title">创建挂号</h2>
+    
+    <form method="POST">
+        <div class="form-group">
+            <label for="department_id">选择科室</label>
+            <select name="department_id" id="department_id" class="form-control" required>
+                {% for dept in departments %}
+                <option value="{{ dept.department_id }}">{{ dept.department_name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        
+        <button type="submit" class="btn btn-success">提交挂号</button>
+        <a href="{{ url_for('patient_dashboard') }}" class="btn btn-secondary">返回</a>
+    </form>
+    
+    <h3 style="margin-top: 2rem;">可选科室列表</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>科室编号</th>
+                <th>科室名称</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for dept in departments %}
+            <tr>
+                <td>{{ dept.department_id }}</td>
+                <td>{{ dept.department_name }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

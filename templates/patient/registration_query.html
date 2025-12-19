@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}挂号查询{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2 class="card-title">挂号查询</h2>
+    
+    {% if registrations %}
+    <table>
+        <thead>
+            <tr>
+                <th>挂号编号</th>
+                <th>病历号</th>
+                <th>科室编号</th>
+                <th>医生工号</th>
+                <th>缴费号</th>
+                <th>创建时间</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for reg in registrations %}
+            <tr>
+                <td>{{ reg.registration_id }}</td>
+                <td>{{ reg.patient_id }}</td>
+                <td>{{ reg.department_id }}</td>
+                <td>{{ reg.doctor_id or '未分配' }}</td>
+                <td>{{ reg.payment_id or '未生成' }}</td>
+                <td>{{ reg.created_at }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>暂无挂号记录</p>
+    {% endif %}
+    
+    <div style="margin-top: 2rem;">
+        <a href="{{ url_for('patient_dashboard') }}" class="btn btn-secondary">返回</a>
+    </div>
+</div>
+{% endblock %}

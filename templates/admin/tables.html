@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}显示表内容{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2 class="card-title">数据库表内容</h2>
+    
+    {% for table_name, records in tables.items() %}
+    <h3 style="margin-top: 2rem;">{{ table_name }} 表</h3>
+    {% if records %}
+    <div style="overflow-x: auto;">
+        <table>
+            <thead>
+                <tr>
+                    {% for key in records[0].keys() %}
+                    <th>{{ key }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for record in records %}
+                <tr>
+                    {% for value in record.values() %}
+                    <td>{{ value }}</td>
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p>表为空</p>
+    {% endif %}
+    {% endfor %}
+    
+    <div style="margin-top: 2rem;">
+        <a href="{{ url_for('admin_home') }}" class="btn btn-secondary">返回</a>
+    </div>
+</div>
+{% endblock %}
