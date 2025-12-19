@@ -68,6 +68,109 @@ def create_registration(cursor, patient_id, department_id):
         print(f"❌ 创建挂号失败: {e}")
         return None
 
+def create_registration_with_payment(cursor, patient_id, department_id, registration_fee, use_stored_procedure=True):
+    """
+    创建挂号记录并生成缴费记录
+    
+    Args:
+        cursor: 数据库游标
+        patient_id: 病历号
+        department_id: 科室编号
+        registration_fee: 挂号费用
+        use_stored_procedure: 是否使用存储过程（默认True）
+    
+    Returns:
+        tuple: (挂号编号, 缴费号)，失败返回(None, None)
+    """
+    try:
+        if use_stored_procedure:
+            # 使用存储过程创建挂号和缴费记录
+            cursor.callproc('sp_create_registration_with_payment', 
+                          [patient_id, department_id, registration_fee, 0, 0])
+            
+            # 获取输出参数
+            cursor.execute("SELECT @_sp_create_registration_with_payment_3 AS registration_id, "
+                          "@_sp_create_registration_with_payment_4 AS payment_id")
+            result = cursor.fetchone()
+            
+            registration_id = result['registration_id']
+            payment_id = result['payment_id']
+            
+            # 查询并打印详细信息
+            cursor.execute("SELECT name FROM patient WHERE patient_id = %s", (patient_id,))
+            patient = cursor.fetchone()
+            patient_name = patient['name'] if patient else "未知病人"
+
+            cursor.execute("SELECT department_name FROM department WHERE department_id = %s", (department_id,))
+            department = cursor.fetchone()
+            dept_name = department['department_name'] if department else "未知科室"
+            
+            print(f"✅ 挂号创建成功！（使用存储过程）")
+            print(f"   挂号编号: {registration_id}")
+            print(f"   缴费号: {payment_id}")
+            print(f"   病人: {patient_name} (病历号: {patient_id})")
+            print(f"   挂号科室: {dept_name} (科室ID: {department_id})")
+            print(f"   挂号费用: {registration_fee} 元")
+            print(f"   状态: 待分配医生，待缴费")
+            
+            return registration_id, payment_id
+        else:
+            # 原有的方式：分别创建
+            # 1. 检查病人是否存在
+            if not patient_module.check_patient_exists(cursor, patient_id):
+                print(f"❌ 创建挂号失败：病历号 {patient_id} 不存在")
+                return None, None
+            
+            # 2. 检查科室是否存在
+            if not department_module.check_department_exists(cursor, department_id):
+                print(f"❌ 创建挂号失败：科室编号 {department_id} 不存在")
+                return None, None
+            
+            # 3. 创建缴费记录
+            payment_id = payment_module.create_payment(cursor, patient_id, registration_fee, None)
+            if not payment_id:
+                print(f"❌ 创建挂号失败：无法创建缴费记录")
+                return None, None
+            
+            # 4. 创建挂号记录
+            sql = """
+            INSERT INTO registration (patient_id, department_id, payment_id, created_at) 
+            VALUES (%s, %s, %s, NOW())
+            """
+            cursor.execute(sql, (patient_id, department_id, payment_id))
+            
+            cursor.execute("SELECT LAST_INSERT_ID()")
+            result = cursor.fetchone()
+            
+            if isinstance(result, tuple):
+                registration_id = result[0]
+            else:
+                registration_id = result['LAST_INSERT_ID()']
+            
+            # 5. 查询并打印详细信息
+            cursor.execute("SELECT name FROM patient WHERE patient_id = %s", (patient_id,))
+            patient = cursor.fetchone()
+            patient_name = patient['name'] if patient else "未知病人"
+
+            cursor.execute("SELECT department_name FROM department WHERE department_id = %s", (department_id,))
+            department = cursor.fetchone()
+            dept_name = department['department_name'] if department else "未知科室"
+            
+            print(f"✅ 挂号创建成功！")
+            print(f"   挂号编号: {registration_id}")
+            print(f"   缴费号: {payment_id}")
+            print(f"   病人: {patient_name} (病历号: {patient_id})")
+            print(f"   挂号科室: {dept_name} (科室ID: {department_id})")
+            print(f"   挂号费用: {registration_fee} 元")
+            print(f"   状态: 待分配医生，待缴费")
+            
+            return registration_id, payment_id
+        
+    except Exception as e:
+        print(f"❌ 创建挂号失败: {e}")
+        return None, None
+
+
 def process_registration(cursor, registration_id, doctor_id):
     """
     处理挂号（为挂号分配医生）
