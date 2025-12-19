@@ -30,6 +30,12 @@ cursor = connection.cursor()
 # 可选：重置数据库，然后添加一些初始数据，第一次运行时没有数据库，需要先creat_table
 setup.drop_all_tables_for_testing(cursor)
 setup.create_table(cursor)
+
+# 创建存储过程和触发器
+print("\n创建存储过程和触发器...")
+setup.create_stored_procedures(cursor)
+setup.create_triggers(cursor)
+
 entity.department.create_department(cursor, '内科') # 内科id=1
 entity.department.create_department(cursor, '外科') # 外科id=2
 entity.doctor.register_doctor(cursor, '张内科医生', '男', '13812345678', '主任医师', 1) 

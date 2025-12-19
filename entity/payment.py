@@ -100,57 +100,89 @@ def query_payment(cursor, payment_id=None, patient_id=None, time_is_null=False):
         print(f"❌ 查询缴费记录失败: {e}")
         return []
 
-def complete_payment(cursor, payment_id):
+def complete_payment(cursor, payment_id, use_stored_procedure=True):
     """
     完成缴费操作，将缴费时间设置为当前时间
     
     Args:
         cursor: 数据库游标
         payment_id: 缴费号
+        use_stored_procedure: 是否使用存储过程（默认True）
     
     Returns:
         bool: 缴费操作是否成功
     """
     try:
-        # 1. 检查缴费记录是否存在
-        if not check_payment_exists(cursor, payment_id):
-            print(f"❌ 缴费失败：缴费号 {payment_id} 不存在")
-            return False
-        
-        # 2. 查询当前缴费记录信息
-        cursor.execute("SELECT patient_id, price, time FROM payment WHERE payment_id = %s", (payment_id,))
-        payment = cursor.fetchone()
-        
-        if not payment:
-            print(f"❌ 缴费失败：缴费号 {payment_id} 的记录不存在")
-            return False
-        
-        # 3. 检查是否已经缴费过
-        if payment['time']:
-            print(f"⚠️ 缴费号 {payment_id} 已经缴费过，缴费时间: {payment['time']}")
+        if use_stored_procedure:
+            # 使用存储过程完成缴费
+            cursor.callproc('sp_complete_payment', [payment_id, 0, ''])
+            
+            # 获取输出参数
+            cursor.execute("SELECT @_sp_complete_payment_1 AS result_code, "
+                          "@_sp_complete_payment_2 AS result_message")
+            result = cursor.fetchone()
+            
+            if result['result_code'] == 0:
+                # 查询并打印详细信息
+                cursor.execute("SELECT patient_id, price FROM payment WHERE payment_id = %s", (payment_id,))
+                payment = cursor.fetchone()
+                
+                if payment:
+                    cursor.execute("SELECT name FROM patient WHERE patient_id = %s", (payment['patient_id'],))
+                    patient = cursor.fetchone()
+                    patient_name = patient['name'] if patient else "未知病人"
+                    
+                    print(f"✅ 缴费成功！（使用存储过程）")
+                    print(f"   缴费号: {payment_id}")
+                    print(f"   病人: {patient_name} (病历号: {payment['patient_id']})")
+                    print(f"   缴费金额: {payment['price']} 元")
+                    print(f"   缴费时间: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+                
+                return True
+            else:
+                print(f"❌ {result['result_message']}")
+                return False
+        else:
+            # 原有的直接SQL方式
+            # 1. 检查缴费记录是否存在
+            if not check_payment_exists(cursor, payment_id):
+                print(f"❌ 缴费失败：缴费号 {payment_id} 不存在")
+                return False
+            
+            # 2. 查询当前缴费记录信息
+            cursor.execute("SELECT patient_id, price, time FROM payment WHERE payment_id = %s", (payment_id,))
+            payment = cursor.fetchone()
+            
+            if not payment:
+                print(f"❌ 缴费失败：缴费号 {payment_id} 的记录不存在")
+                return False
+            
+            # 3. 检查是否已经缴费过
+            if payment['time']:
+                print(f"⚠️ 缴费号 {payment_id} 已经缴费过，缴费时间: {payment['time']}")
+                return True
+            
+            # 4. 更新缴费时间
+            sql = """
+            UPDATE payment 
+            SET time = NOW(), updated_at = NOW() 
+            WHERE payment_id = %s
+            """
+            cursor.execute(sql, (payment_id,))
+            
+            # 5. 查询并打印详细信息
+            # 获取病人姓名
+            cursor.execute("SELECT name FROM patient WHERE patient_id = %s", (payment['patient_id'],))
+            patient = cursor.fetchone()
+            patient_name = patient['name'] if patient else "未知病人"
+            
+            print(f"✅ 缴费成功！")
+            print(f"   缴费号: {payment_id}")
+            print(f"   病人: {patient_name} (病历号: {payment['patient_id']})")
+            print(f"   缴费金额: {payment['price']} 元")
+            print(f"   缴费时间: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+            
             return True
-        
-        # 4. 更新缴费时间
-        sql = """
-        UPDATE payment 
-        SET time = NOW(), updated_at = NOW() 
-        WHERE payment_id = %s
-        """
-        cursor.execute(sql, (payment_id,))
-        
-        # 5. 查询并打印详细信息
-        # 获取病人姓名
-        cursor.execute("SELECT name FROM patient WHERE patient_id = %s", (payment['patient_id'],))
-        patient = cursor.fetchone()
-        patient_name = patient['name'] if patient else "未知病人"
-        
-        print(f"✅ 缴费成功！")
-        print(f"   缴费号: {payment_id}")
-        print(f"   病人: {patient_name} (病历号: {payment['patient_id']})")
-        print(f"   缴费金额: {payment['price']} 元")
-        print(f"   缴费时间: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
-        
-        return True
         
     except Exception as e:
         print(f"❌ 缴费失败: {e}")
