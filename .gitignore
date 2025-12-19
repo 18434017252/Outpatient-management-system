@@ -58,3 +58,7 @@ htmlcov/
 
 # Logs
 *.log
+
+# Test files with credentials
+test_stored_procedures.py
+

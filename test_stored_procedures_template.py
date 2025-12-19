@@ -2,9 +2,11 @@
 # -*- coding: utf-8 -*-
 """
 测试存储过程和触发器功能
+注意：请复制此文件为 test_stored_procedures.py 并填入数据库配置
 """
 
 import pymysql
+import traceback
 import setup
 import entity.patient as patient_module
 import entity.department as department_module
@@ -15,12 +17,13 @@ import entity.prescription as prescription_module
 import entity.payment as payment_module
 
 # 配置数据库连接
+# TODO: 请填入你的数据库配置信息
 config = {
-    'host': '124.70.86.207',
+    'host': 'your_host',       # 例如: 'localhost' 或 '127.0.0.1'
     'port': 3306,
-    'user': 'u23371057',
-    'password': 'Aa727319',
-    'database': 'try_db23371057',
+    'user': 'your_username',   # 例如: 'root'
+    'password': 'your_password',
+    'database': 'your_database',
     'charset': 'utf8mb4',
     'cursorclass': pymysql.cursors.DictCursor,
     'autocommit': True
@@ -154,7 +157,6 @@ def test_stored_procedures_and_triggers():
         
     except Exception as e:
         print(f"❌ 测试失败: {e}")
-        import traceback
         traceback.print_exc()
 
 if __name__ == '__main__':

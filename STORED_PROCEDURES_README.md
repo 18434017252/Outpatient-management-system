@@ -208,6 +208,16 @@ connection.close()
 
 ## 测试
 
+首先配置测试环境：
+
+```bash
+# 复制模板文件
+cp test_stored_procedures_template.py test_stored_procedures.py
+
+# 编辑 test_stored_procedures.py 填入数据库配置
+# 修改 config 字典中的 host, user, password, database 等参数
+```
+
 运行测试脚本验证功能：
 
 ```bash
