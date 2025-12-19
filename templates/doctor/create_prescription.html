@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}开具处方{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2 class="card-title">开具处方</h2>
+    
+    <form method="POST">
+        <div class="form-group">
+            <label for="registration_id">挂号编号</label>
+            <input type="number" name="registration_id" id="registration_id" class="form-control" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="drug_id">药品</label>
+            <select name="drug_id" id="drug_id" class="form-control" required>
+                {% for drug in drugs %}
+                <option value="{{ drug.drug_id }}">{{ drug.drug_name }} (库存: {{ drug.stored_quantity }}, 价格: ¥{{ drug.drug_price }})</option>
+                {% endfor %}
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label for="quantity">数量</label>
+            <input type="number" name="quantity" id="quantity" class="form-control" min="1" required>
+        </div>
+        
+        <button type="submit" class="btn btn-success">开具处方</button>
+        <a href="{{ url_for('doctor_dashboard') }}" class="btn btn-secondary">返回</a>
+    </form>
+    
+    <h3 style="margin-top: 2rem;">可用药品列表</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>药品编号</th>
+                <th>药品名称</th>
+                <th>库存数量</th>
+                <th>单价</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for drug in drugs %}
+            <tr>
+                <td>{{ drug.drug_id }}</td>
+                <td>{{ drug.drug_name }}</td>
+                <td>{{ drug.stored_quantity }}</td>
+                <td>¥{{ drug.drug_price }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

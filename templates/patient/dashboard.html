@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}病人控制台{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2 class="card-title">病人控制台</h2>
+    
+    {% if patient %}
+    <div style="margin-bottom: 2rem;">
+        <h3>您的信息</h3>
+        <p><strong>病历号:</strong> {{ patient.patient_id }}</p>
+        <p><strong>姓名:</strong> {{ patient.name }}</p>
+        <p><strong>性别:</strong> {{ patient.gender }}</p>
+        <p><strong>手机号:</strong> {{ patient.phone_number }}</p>
+    </div>
+    {% endif %}
+    
+    <div class="menu-grid">
+        <div class="menu-item">
+            <h3>修改信息</h3>
+            <a href="{{ url_for('patient_update') }}" class="btn btn-primary">修改</a>
+        </div>
+        
+        <div class="menu-item">
+            <h3>科室查询</h3>
+            <a href="{{ url_for('patient_department_query') }}" class="btn btn-primary">查询</a>
+        </div>
+        
+        <div class="menu-item">
+            <h3>挂号</h3>
+            <a href="{{ url_for('patient_create_registration') }}" class="btn btn-primary">挂号</a>
+        </div>
+        
+        <div class="menu-item">
+            <h3>挂号查询</h3>
+            <a href="{{ url_for('patient_registration_query') }}" class="btn btn-primary">查询</a>
+        </div>
+        
+        <div class="menu-item">
+            <h3>处方查询</h3>
+            <a href="{{ url_for('patient_prescription_query') }}" class="btn btn-primary">查询</a>
+        </div>
+        
+        <div class="menu-item">
+            <h3>缴费</h3>
+            <a href="{{ url_for('patient_payment') }}" class="btn btn-primary">缴费</a>
+        </div>
+    </div>
+    
+    <div style="margin-top: 2rem;">
+        <a href="{{ url_for('patient_logout') }}" class="btn btn-danger">退出登录</a>
+    </div>
+</div>
+{% endblock %}

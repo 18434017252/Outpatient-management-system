@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}缴费{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2 class="card-title">缴费管理</h2>
+    
+    {% if payments %}
+    <h3>待缴费记录</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>缴费号</th>
+                <th>病历号</th>
+                <th>缴费价格</th>
+                <th>缴费时间</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for payment in payments %}
+            <tr>
+                <td>{{ payment.payment_id }}</td>
+                <td>{{ payment.patient_id }}</td>
+                <td>¥{{ payment.price }}</td>
+                <td>{{ payment.time or '未缴费' }}</td>
+                <td>
+                    <form method="POST" style="display: inline;">
+                        <input type="hidden" name="payment_id" value="{{ payment.payment_id }}">
+                        <button type="submit" class="btn btn-success">缴费</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>暂无待缴费记录</p>
+    {% endif %}
+    
+    <div style="margin-top: 2rem;">
+        <a href="{{ url_for('patient_dashboard') }}" class="btn btn-secondary">返回</a>
+    </div>
+</div>
+{% endblock %}

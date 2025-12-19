@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}医生控制台{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2 class="card-title">医生控制台</h2>
+    
+    {% if doctor %}
+    <div style="margin-bottom: 2rem;">
+        <h3>您的信息</h3>
+        <p><strong>工号:</strong> {{ doctor.doctor_id }}</p>
+        <p><strong>姓名:</strong> {{ doctor.name }}</p>
+        <p><strong>性别:</strong> {{ doctor.gender }}</p>
+        <p><strong>职称:</strong> {{ doctor.position or '未设置' }}</p>
+        <p><strong>科室编号:</strong> {{ doctor.department_id or '未分配' }}</p>
+    </div>
+    {% endif %}
+    
+    <div class="menu-grid">
+        <div class="menu-item">
+            <h3>查看待办挂号</h3>
+            <p>查看分配给我的挂号</p>
+            <a href="{{ url_for('doctor_registrations') }}" class="btn btn-primary">查看</a>
+        </div>
+        
+        <div class="menu-item">
+            <h3>开具处方</h3>
+            <p>为患者开具药品处方</p>
+            <a href="{{ url_for('doctor_create_prescription') }}" class="btn btn-primary">开具</a>
+        </div>
+    </div>
+    
+    <div style="margin-top: 2rem;">
+        <a href="{{ url_for('doctor_logout') }}" class="btn btn-danger">退出登录</a>
+    </div>
+</div>
+{% endblock %}

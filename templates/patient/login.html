@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block title %}病人登录{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2 class="card-title">病人登录</h2>
+    
+    <form method="POST">
+        <div class="form-group">
+            <label for="patient_id">病历号</label>
+            <input type="number" name="patient_id" id="patient_id" class="form-control" required>
+        </div>
+        
+        <button type="submit" class="btn btn-primary">登录</button>
+        <a href="{{ url_for('patient_home') }}" class="btn btn-secondary">返回</a>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}修改信息{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2 class="card-title">修改病人信息</h2>
+    
+    <form method="POST">
+        <div class="form-group">
+            <label for="update_type">修改类型</label>
+            <select name="update_type" id="update_type" class="form-control" required>
+                <option value="name">姓名</option>
+                <option value="phone_number">手机号</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label for="update_value">新值</label>
+            <input type="text" name="update_value" id="update_value" class="form-control" required>
+        </div>
+        
+        <button type="submit" class="btn btn-success">提交</button>
+        <a href="{{ url_for('patient_dashboard') }}" class="btn btn-secondary">返回</a>
+    </form>
+</div>
+{% endblock %}

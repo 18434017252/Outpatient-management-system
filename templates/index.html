@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}门诊管理系统 - 首页{% endblock %}
+
+{% block content %}
+<div class="hero">
+    <h1>欢迎使用门诊管理系统</h1>
+    <p>请选择您的身份进入相应系统</p>
+</div>
+
+<div class="menu-grid">
+    <div class="menu-item">
+        <h3>病人端</h3>
+        <p>注册、登录、查询、挂号、缴费等服务</p>
+        <a href="{{ url_for('patient_home') }}" class="btn btn-primary">进入病人系统</a>
+    </div>
+    
+    <div class="menu-item">
+        <h3>医生端</h3>
+        <p>查看挂号、开具处方等医疗服务</p>
+        <a href="{{ url_for('doctor_home') }}" class="btn btn-success">进入医生系统</a>
+    </div>
+    
+    <div class="menu-item">
+        <h3>管理员端</h3>
+        <p>科室管理、医生管理、药品管理等</p>
+        <a href="{{ url_for('admin_home') }}" class="btn btn-danger">进入管理系统</a>
+    </div>
+</div>
+{% endblock %}

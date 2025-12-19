@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}医生系统{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2 class="card-title">医生系统</h2>
+    
+    <div class="menu-grid">
+        <div class="menu-item">
+            <h3>医生登录</h3>
+            <a href="{{ url_for('doctor_login') }}" class="btn btn-success">登录</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
